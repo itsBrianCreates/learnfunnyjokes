@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Dad Jokes - Local & API</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🤣 Dad Jokes 🤣</h1>
+        
+        <div class="view-toggle">
+            <button class="toggle-btn active" onclick="showMainView()" id="main-toggle">New Jokes</button>
+            <button class="toggle-btn" onclick="showFavoritesView()" id="favorites-toggle">My Favorites <span class="favorites-count" id="favorites-count">(0)</span></button>
+            <button class="toggle-btn" onclick="showHistoryView()" id="history-toggle">Recently Viewed <span class="favorites-count" id="history-count">(0)</span></button>
+        </div>
+        
+        <div class="main-section active" id="main-section">
+            <div class="navigation-controls">
+                <button class="nav-btn" onclick="navigateOrFetchJoke(-1)" id="prev-btn" disabled>← Previous</button>
+                <div class="history-info" id="history-info">1 of 1</div>
+                <button class="nav-btn" onclick="navigateOrFetchJoke(1)" id="next-btn">Next →</button>
+            </div>
+            
+            <div class="joke-container">
+                <div class="joke-text" id="joke-text">
+                    Why don't scientists trust atoms?<br>
+                    <span class="punchline">Because they make up everything!</span>
+                </div>
+                <div class="joke-actions">
+                    <button class="favorite-btn" onclick="toggleFavorite()" id="favorite-btn" title="Add to favorites">♡</button>
+                    <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy Joke</button>
+                </div>
+                <div class="confirmation-message" id="confirmation-message">Copied!</div>
+            </div>
+        </div>
+        
+        <div class="favorites-section" id="favorites-section">
+            <div class="favorites-list" id="favorites-list">
+                <div class="empty-favorites" id="empty-favorites">
+                    No favorite jokes yet! ❤️<br>
+                    <small>Click the heart icon next to jokes to save them here.</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recently-viewed-section" id="recently-viewed-section">
+            <div class="history-list" id="history-list">
+                <div class="empty-history" id="empty-history">
+                    No jokes viewed yet! 📚<br>
+                    <small>Get some jokes and they'll appear here.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls" id="controls">
+            <div class="search-container">
+                <input type="text" class="search-input" id="search-input" placeholder="Search for jokes (press Enter to search)">
+                <button class="btn btn-secondary" onclick="searchJokes()" id="search-btn">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/utils.js"></script>
+    <script src="js/jokeService.js"></script>
+    <script src="js/favoritesManager.js"></script>
+    <script src="js/historyManager.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
