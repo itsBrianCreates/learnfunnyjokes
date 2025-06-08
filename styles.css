@@ -12,7 +12,7 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #fffbea 0%, #fff3c4 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -49,13 +49,13 @@ h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-left: 5px solid #667eea;
+    border-left: 5px solid #ffd43b;
     transition: all 0.3s ease;
 }
 
 .joke-container:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 6px 20px rgba(255, 212, 59, 0.15);
 }
 
 .joke-text {
@@ -120,8 +120,8 @@ h1 {
 }
 
 .btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
+    background: linear-gradient(45deg, #ffd43b, #ffcc00);
+    color: #333;
     border: none;
     padding: 16px 28px;
     font-size: 1rem;
@@ -153,7 +153,7 @@ h1 {
 
 .btn:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 204, 0, 0.4);
 }
 
 .btn:hover::before {
@@ -190,7 +190,7 @@ h1 {
     width: 20px;
     height: 20px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid #667eea;
+    border-top: 2px solid #ffd43b;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -671,9 +671,9 @@ h1 {
 }
 
 .toggle-btn.active {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
-    border-color: #667eea;
+    background: linear-gradient(45deg, #ffd43b, #ffcc00);
+    color: #333;
+    border-color: #ffd43b;
     transform: scale(1.05);
 }
 
@@ -725,7 +725,7 @@ h1 {
     background: #f8f9fa;
     border-radius: 10px;
     padding: 20px;
-    border-left: 5px solid #667eea;
+    border-left: 5px solid #ffd43b;
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideInFromLeft 0.5s ease forwards;
@@ -733,7 +733,7 @@ h1 {
 
 .favorite-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 4px 15px rgba(255, 212, 59, 0.15);
 }
 
 .favorite-joke-text {
@@ -896,17 +896,18 @@ h1 {
 }
 
 .history-item:hover {
-    background: #e9ecef;
-    border-left-color: #667eea;
+    background: linear-gradient(45deg, #ffd43b, #ffcc00);
+    border-left-color: #ffd43b;
+    color: #333;
     transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 2px 8px rgba(255, 212, 59, 0.15);
 }
 
 .history-item.current {
-    border-left-color: #667eea;
-    background: #e3f2fd;
+    border-left-color: #ffd43b;
+    background: #fff9db;
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
 }
 
 .history-item-text {
