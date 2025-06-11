@@ -310,12 +310,13 @@
         }
 
         // Function to show confirmation message
-        function showConfirmation() {
+        function showConfirmation(message = 'Copied!') {
             const confirmationElement = document.getElementById('confirmation-message');
-            
+            confirmationElement.textContent = message;
+
             // Show the confirmation message
             confirmationElement.classList.add('show');
-            
+
             // Hide it after 2 seconds
             setTimeout(() => {
                 confirmationElement.classList.remove('show');
