@@ -7,7 +7,6 @@ A light-hearted web app that delivers hilarious dad jokes via a clean UI — com
 - 😄 Get random dad jokes from icanhazdadjoke.com  
 - 🧠 Includes a curated list of local jokes  
 - ❤️ Save favorites for later laughs  
-- 🕘 Track recently viewed jokes  
 - 🔎 Search for jokes by keyword  
 - 📋 Copy jokes to your clipboard  
 - 🔁 Keyboard support for fast joke cycling  
