@@ -36,15 +36,9 @@
         <div class="view-toggle">
             <button class="toggle-btn active" onclick="showMainView()" id="main-toggle">New Jokes</button>
             <button class="toggle-btn" onclick="showFavoritesView()" id="favorites-toggle">My Favorites <span class="favorites-count" id="favorites-count">(0)</span></button>
-            <button class="toggle-btn" onclick="showHistoryView()" id="history-toggle">Recently Viewed <span class="favorites-count" id="history-count">(0)</span></button>
         </div>
         
         <div class="main-section active" id="main-section">
-            <div class="navigation-controls">
-                <button class="nav-btn" onclick="navigateHistory(-1)" id="prev-btn" disabled>← Previous</button>
-                <div class="history-info" id="history-info">1 of 1</div>
-                <button class="nav-btn" onclick="navigateHistory(1)" id="next-btn" disabled>Next →</button>
-            </div>
             
             <div class="joke-container">
                 <div class="joke-text" id="joke-text">
@@ -68,14 +62,6 @@
             </div>
         </div>
         
-        <div class="recently-viewed-section" id="recently-viewed-section">
-            <div class="history-list" id="history-list">
-                <div class="empty-history" id="empty-history">
-                    No jokes viewed yet! 📚<br>
-                    <small>Get some jokes and they'll appear here.</small>
-                </div>
-            </div>
-        </div>
         
         <div class="controls" id="controls">
             <div class="search-container">
@@ -116,9 +102,6 @@
         let currentJoke = '';
         let favorites = [];
         let currentView = 'main';
-        let jokeHistory = [];
-        let historyIndex = -1;
-        const MAX_HISTORY = 10;
 
         // Function to fetch a random dad joke from the API
         async function getRandomJoke() {
@@ -220,10 +203,6 @@
             jokeElement.classList.add('fade-out');
             
             setTimeout(() => {
-                // Add to history if it's a new joke (not from navigation)
-                if (addToHistory) {
-                    addToJokeHistory(jokeText);
-                }
                 
                 // Try to split the joke into setup and punchline
                 // Look for common question patterns or use a simple split
@@ -258,8 +237,6 @@
                 
                 // Update favorite button state
                 updateFavoriteButton();
-                // Update navigation controls
-                updateNavigationControls();
             }, 200); // Half of fade-out duration
         }
 
@@ -417,10 +394,8 @@
             currentView = 'main';
             document.getElementById('main-section').classList.add('active');
             document.getElementById('favorites-section').classList.remove('active');
-            document.getElementById('recently-viewed-section').classList.remove('active');
             document.getElementById('main-toggle').classList.add('active');
             document.getElementById('favorites-toggle').classList.remove('active');
-            document.getElementById('history-toggle').classList.remove('active');
             document.getElementById('controls').style.display = 'block';
         }
 
@@ -428,25 +403,12 @@
             currentView = 'favorites';
             document.getElementById('main-section').classList.remove('active');
             document.getElementById('favorites-section').classList.add('active');
-            document.getElementById('recently-viewed-section').classList.remove('active');
             document.getElementById('main-toggle').classList.remove('active');
             document.getElementById('favorites-toggle').classList.add('active');
-            document.getElementById('history-toggle').classList.remove('active');
             document.getElementById('controls').style.display = 'none';
             displayFavorites();
         }
 
-        function showHistoryView() {
-            currentView = 'history';
-            document.getElementById('main-section').classList.remove('active');
-            document.getElementById('favorites-section').classList.remove('active');
-            document.getElementById('recently-viewed-section').classList.add('active');
-            document.getElementById('main-toggle').classList.remove('active');
-            document.getElementById('favorites-toggle').classList.remove('active');
-            document.getElementById('history-toggle').classList.add('active');
-            document.getElementById('controls').style.display = 'none';
-            displayHistory();
-        }
 
         function displayFavorites() {
             const favoritesList = document.getElementById('favorites-list');
@@ -486,119 +448,12 @@
             showConfirmation('Removed from favorites');
         }
 
-        // History management functions
-        function addToJokeHistory(jokeText) {
-            // Don't add duplicates if it's the same as the last joke
-            if (jokeHistory.length > 0 && jokeHistory[jokeHistory.length - 1].text === jokeText) {
-                return;
-            }
-            
-            const historyItem = {
-                text: jokeText,
-                id: Date.now().toString(),
-                timestamp: new Date().toLocaleTimeString()
-            };
-            
-            jokeHistory.push(historyItem);
-            
-            // Keep only the last MAX_HISTORY items
-            if (jokeHistory.length > MAX_HISTORY) {
-                jokeHistory = jokeHistory.slice(-MAX_HISTORY);
-            }
-            
-            // Update history index to point to the latest joke
-            historyIndex = jokeHistory.length - 1;
-            updateHistoryCount();
-        }
-
-        function navigateHistory(direction) {
-            if (jokeHistory.length === 0) return;
-            
-            const newIndex = historyIndex + direction;
-            
-            // Check bounds
-            if (newIndex < 0 || newIndex >= jokeHistory.length) return;
-            
-            historyIndex = newIndex;
-            const historyItem = jokeHistory[historyIndex];
-            
-            // Display the joke without adding to history
-            displayJoke(historyItem.text, false);
-        }
-
-        function updateNavigationControls() {
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const historyInfo = document.getElementById('history-info');
-            
-            // Update button states
-            prevBtn.disabled = historyIndex <= 0;
-            nextBtn.disabled = historyIndex >= jokeHistory.length - 1;
-            
-            // Update info display
-            if (jokeHistory.length > 0) {
-                historyInfo.textContent = `${historyIndex + 1} of ${jokeHistory.length}`;
-            } else {
-                historyInfo.textContent = '0 of 0';
-            }
-        }
-
-        function updateHistoryCount() {
-            const countElement = document.getElementById('history-count');
-            countElement.textContent = `(${jokeHistory.length})`;
-        }
-
-        function displayHistory() {
-            const historyList = document.getElementById('history-list');
-            const emptyMessage = document.getElementById('empty-history');
-            
-            if (jokeHistory.length === 0) {
-                emptyMessage.style.display = 'block';
-                historyList.innerHTML = '';
-                historyList.appendChild(emptyMessage);
-                return;
-            }
-            
-            emptyMessage.style.display = 'none';
-            historyList.innerHTML = '';
-            
-            // Display history in reverse order (newest first)
-            jokeHistory.slice().reverse().forEach((historyItem, index) => {
-                const actualIndex = jokeHistory.length - 1 - index;
-                const historyItemEl = document.createElement('div');
-                historyItemEl.className = 'history-item';
-                
-                // Mark current joke
-                if (actualIndex === historyIndex) {
-                    historyItemEl.classList.add('current');
-                }
-                
-                historyItemEl.innerHTML = `
-                    <div class="history-item-text">${historyItem.text}</div>
-                    <div class="history-item-meta">Viewed at: ${historyItem.timestamp}</div>
-                `;
-                
-                // Add click handler to navigate to this joke
-                historyItemEl.addEventListener('click', () => {
-                    historyIndex = actualIndex;
-                    displayJoke(historyItem.text, false);
-                    showMainView();
-                });
-                
-                historyList.appendChild(historyItemEl);
-            });
-        }
 
         // Add event listeners for keyboard support
         document.addEventListener('DOMContentLoaded', function() {
             // Load favorites on page load
             loadFavorites();
-            
-            // Initialize history with the default joke
-            const defaultJoke = "Why don't scientists trust atoms? Because they make up everything!";
-            addToJokeHistory(defaultJoke);
-            updateNavigationControls();
-            
+
             const searchInput = document.getElementById('search-input');
             
             // Enter key in search input triggers search
