@@ -201,7 +201,7 @@ class FavoritesManager {
                 <div class="favorite-actions">
                     <small>Added: ${favorite.dateAdded}</small>
                     <button class="remove-favorite-btn" onclick="removeFavorite('${favorite.id}')">
-                        Remove ❌
+                        Remove
                     </button>
                 </div>
             `;
