@@ -88,29 +88,15 @@ function displayJoke(jokeText, addToHistory = true) {
  */
 function setLoadingState(loading) {
     isLoading = loading;
-    const buttons = ['random-btn', 'search-btn'];
-    
-    buttons.forEach(btnId => {
-        const btn = document.getElementById(btnId);
-        if (!btn) return;
+    const btn = document.getElementById('random-btn');
+    if (!btn) return;
 
-        if (btnId === 'random-btn') {
-            // Disable next joke button when loading
-            btn.disabled = loading;
-            if (loading) {
-                btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-            } else {
-                btn.innerHTML = 'Next Joke';
-            }
-        } else if (btnId === 'search-btn') {
-            btn.disabled = loading;
-            if (loading) {
-                btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-            } else {
-                btn.innerHTML = 'Search';
-            }
-        }
-    });
+    btn.disabled = loading;
+    if (loading) {
+        btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    } else {
+        btn.innerHTML = 'Next Joke';
+    }
 }
 
 /**
