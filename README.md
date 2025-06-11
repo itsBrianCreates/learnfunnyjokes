@@ -1,4 +1,4 @@
-# Learn Funny Jokes 😂
+# Learn Funny Jokes
 
 A light-hearted web app that delivers hilarious dad jokes via a clean UI — complete with local jokes, API integration, favorites, and history tracking.
 
