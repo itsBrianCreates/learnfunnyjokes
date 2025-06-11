@@ -14,12 +14,10 @@ let isLoading = false;
 function initializeApp() {
     // Initialize with the default joke
     const defaultJoke = "Why don't scientists trust atoms? Because they make up everything!";
-    historyManager.addToHistory(defaultJoke);
     currentJoke = defaultJoke;
-    
+
     // Update initial UI state
     favoritesManager.updateFavoriteButton(currentJoke);
-    historyManager.updateNavigationControls();
     
     // Set up event listeners
     setupEventListeners();
@@ -40,21 +38,7 @@ function setupEventListeners() {
         });
     }
     
-    // Arrow key navigation for jokes
-    document.addEventListener('keydown', function(event) {
-        // Only handle arrow keys if not focused on input and in main view
-        if (document.activeElement === searchInput || currentView !== 'main') {
-            return;
-        }
-        
-        if (event.key === 'ArrowLeft') {
-            event.preventDefault();
-            navigateOrFetchJoke(-1);
-        } else if (event.key === 'ArrowRight') {
-            event.preventDefault();
-            navigateOrFetchJoke(1);
-        }
-    });
+    // No arrow key navigation
 }
 
 /**
@@ -72,10 +56,7 @@ function displayJoke(jokeText, addToHistory = true) {
     jokeElement.classList.add('fade-out');
     
     setTimeout(() => {
-        // Add to history if it's a new joke (not from navigation)
-        if (addToHistory) {
-            historyManager.addToHistory(jokeText);
-        }
+        // No history tracking
         
         // Split joke into setup and punchline
         const { setup, punchline } = splitJoke(jokeText);
@@ -98,7 +79,6 @@ function displayJoke(jokeText, addToHistory = true) {
         
         // Update UI state
         favoritesManager.updateFavoriteButton(currentJoke);
-        historyManager.updateNavigationControls();
     }, 200);
 }
 
@@ -184,38 +164,6 @@ async function searchJokes() {
 }
 
 /**
- * Navigate through joke history or fetch new joke
- * @param {number} direction - Direction to navigate (-1 for previous, 1 for next)
- */
-function navigateOrFetchJoke(direction) {
-    if (direction === -1) {
-        // Previous: try to navigate back in history
-        const joke = historyManager.navigate(direction);
-        if (joke) {
-            displayJoke(joke, false);
-        }
-        // If no previous joke in history, do nothing (button should be disabled)
-    } else if (direction === 1) {
-        // Next: try to navigate forward in history, or fetch new joke
-        const joke = historyManager.navigate(direction);
-        if (joke) {
-            displayJoke(joke, false);
-        } else {
-            // At the end of history, fetch a new joke
-            getRandomJoke();
-        }
-    }
-}
-
-/**
- * Navigate through joke history (legacy function for compatibility)
- * @param {number} direction - Direction to navigate (-1 for previous, 1 for next)
- */
-function navigateHistory(direction) {
-    navigateOrFetchJoke(direction);
-}
-
-/**
  * Toggle favorite status of current joke
  */
 function toggleFavorite() {
@@ -283,12 +231,10 @@ function showMainView() {
     // Update view visibility
     document.getElementById('main-section')?.classList.add('active');
     document.getElementById('favorites-section')?.classList.remove('active');
-    document.getElementById('recently-viewed-section')?.classList.remove('active');
     
     // Update toggle buttons
     document.getElementById('main-toggle')?.classList.add('active');
     document.getElementById('favorites-toggle')?.classList.remove('active');
-    document.getElementById('history-toggle')?.classList.remove('active');
     
     // Show controls
     const controls = document.getElementById('controls');
@@ -304,12 +250,10 @@ function showFavoritesView() {
     // Update view visibility
     document.getElementById('main-section')?.classList.remove('active');
     document.getElementById('favorites-section')?.classList.add('active');
-    document.getElementById('recently-viewed-section')?.classList.remove('active');
     
     // Update toggle buttons
     document.getElementById('main-toggle')?.classList.remove('active');
     document.getElementById('favorites-toggle')?.classList.add('active');
-    document.getElementById('history-toggle')?.classList.remove('active');
     
     // Hide controls
     const controls = document.getElementById('controls');
@@ -320,42 +264,15 @@ function showFavoritesView() {
 }
 
 /**
- * Show the history view
- */
-function showHistoryView() {
-    currentView = 'history';
-    
-    // Update view visibility
-    document.getElementById('main-section')?.classList.remove('active');
-    document.getElementById('favorites-section')?.classList.remove('active');
-    document.getElementById('recently-viewed-section')?.classList.add('active');
-    
-    // Update toggle buttons
-    document.getElementById('main-toggle')?.classList.remove('active');
-    document.getElementById('favorites-toggle')?.classList.remove('active');
-    document.getElementById('history-toggle')?.classList.add('active');
-    
-    // Hide controls
-    const controls = document.getElementById('controls');
-    if (controls) controls.style.display = 'none';
-    
-    // Display history
-    historyManager.displayHistory();
-}
-
-/**
  * Make functions globally available for inline event handlers
  */
 window.getRandomJoke = getRandomJoke;
 window.searchJokes = searchJokes;
-window.navigateHistory = navigateHistory;
-window.navigateOrFetchJoke = navigateOrFetchJoke;
 window.toggleFavorite = toggleFavorite;
 window.copyJoke = copyJoke;
 window.removeFavorite = removeFavorite;
 window.showMainView = showMainView;
 window.showFavoritesView = showFavoritesView;
-window.showHistoryView = showHistoryView;
 window.displayJoke = displayJoke;
 
 // Initialize app when DOM is loaded
