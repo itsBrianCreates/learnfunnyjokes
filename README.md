@@ -9,7 +9,7 @@ A light-hearted web app that delivers hilarious dad jokes via a clean UI — com
 - ❤️ Save favorites for later laughs  
 - 🔎 Search for jokes by keyword  
 - 📋 Copy jokes to your clipboard  
-- 🔁 Keyboard support for fast joke cycling  
+- 🔁 Keyboard support: press Enter or use the left/right arrows to cycle jokes fast
 
 ## 🚀 Live Site
 
