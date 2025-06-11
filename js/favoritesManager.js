@@ -20,6 +20,8 @@ class FavoritesManager {
             this.updateFavoritesCount();
         } catch (error) {
             console.error('Error loading favorites:', error);
+            // Clear potentially corrupt stored data
+            localStorage.removeItem(this.storageKey);
             this.favorites = [];
         }
     }
