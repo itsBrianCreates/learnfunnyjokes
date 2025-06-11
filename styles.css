@@ -49,13 +49,13 @@ h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-left: 5px solid #ffd43b;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
 
 .joke-container:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(255, 212, 59, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .joke-text {
