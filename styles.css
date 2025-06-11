@@ -675,15 +675,15 @@ h1 {
     background: #f8f9fa;
     border-radius: 10px;
     padding: 20px;
-    border-left: 5px solid #ffd43b;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     animation: slideInFromLeft 0.5s ease forwards;
 }
 
 .favorite-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 212, 59, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .favorite-joke-text {
