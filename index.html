@@ -64,12 +64,10 @@
         
         
         <div class="controls" id="controls">
+            <button class="btn" onclick="getRandomJoke()" id="random-btn">Next Joke <span class="kbd-hint">(Enter)</span></button>
             <div class="search-container">
                 <input type="text" class="search-input" id="search-input" placeholder="Search for jokes (press Enter to search)">
-                <button class="btn btn-secondary" onclick="searchJokes()" id="search-btn">Search</button>
             </div>
-            
-            <button class="btn" onclick="getRandomJoke()" id="random-btn">Next Joke <span class="kbd-hint">(Enter)</span></button>
         </div>
     </div>
 
@@ -243,20 +241,15 @@
         // Function to set loading state
         function setLoadingState(loading) {
             isLoading = loading;
-            const buttons = ['random-btn', 'search-btn'];
-            
-            buttons.forEach(btnId => {
-                const btn = document.getElementById(btnId);
+            const btn = document.getElementById('random-btn');
+            if (btn) {
                 btn.disabled = loading;
-                
-                if (btnId === 'random-btn' || btnId === 'search-btn') {
-                    if (loading) {
-                        btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-                    } else {
-                        btn.innerHTML = btnId === 'random-btn' ? 'Next Joke' : 'Search';
-                    }
+                if (loading) {
+                    btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+                } else {
+                    btn.innerHTML = 'Next Joke';
                 }
-            });
+            }
         }
 
         // Function to show error messages
