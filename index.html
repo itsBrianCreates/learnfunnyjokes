@@ -33,10 +33,7 @@
     <div class="container">
         <h1>Learn Funny Jokes</h1>
         
-        <div class="view-toggle">
-            <button class="toggle-btn active" onclick="showMainView()" id="main-toggle">New Jokes</button>
-            <button class="toggle-btn" onclick="showFavoritesView()" id="favorites-toggle">My Favorites <span class="favorites-count" id="favorites-count">(0)</span></button>
-        </div>
+        <!-- Removed favorites toggle -->
         
         <div class="main-section active" id="main-section">
             
@@ -47,7 +44,6 @@
                 </div>
                 <div class="joke-footer">
                     <div class="joke-actions">
-                        <button class="favorite-btn" onclick="toggleFavorite()" id="favorite-btn" title="Add to favorites">♡</button>
                         <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy Joke</button>
                         <button class="share-btn" onclick="shareJoke()" id="share-btn">Share</button>
                     </div>
@@ -56,14 +52,7 @@
             </div>
         </div>
         
-        <div class="favorites-section" id="favorites-section">
-            <div class="favorites-list" id="favorites-list">
-                <div class="empty-favorites" id="empty-favorites">
-                    No favorite jokes yet! ❤️<br>
-                    <small>Click the heart icon next to jokes to save them here.</small>
-                </div>
-            </div>
-        </div>
+
         
         
         <div class="controls" id="controls">
@@ -101,8 +90,6 @@
         let currentJokeIndex = 0;
         let isLoading = false;
         let currentJoke = '';
-        let favorites = [];
-        let currentView = 'main';
 
         // Function to fetch a random dad joke from the API
         async function getRandomJoke() {
@@ -236,8 +223,6 @@
                     jokeElement.classList.remove('fade-in');
                 }, 400);
                 
-                // Update favorite button state
-                updateFavoriteButton();
             }, 200); // Half of fade-out duration
         }
 
@@ -345,130 +330,9 @@
             }, 2000);
         }
 
-        // Favorites management functions
-        function loadFavorites() {
-            const stored = localStorage.getItem('dadJokeFavorites');
-            favorites = stored ? JSON.parse(stored) : [];
-            updateFavoritesCount();
-        }
-
-        function saveFavorites() {
-            localStorage.setItem('dadJokeFavorites', JSON.stringify(favorites));
-            updateFavoritesCount();
-        }
-
-        function toggleFavorite() {
-            if (!currentJoke) return;
-            
-            const jokeIndex = favorites.findIndex(fav => fav.text === currentJoke);
-            
-            if (jokeIndex === -1) {
-                // Add to favorites
-                const favoriteJoke = {
-                    text: currentJoke,
-                    id: Date.now().toString(),
-                    dateAdded: new Date().toLocaleDateString()
-                };
-                favorites.push(favoriteJoke);
-                showConfirmation('Added to favorites! ❤️');
-            } else {
-                // Remove from favorites
-                favorites.splice(jokeIndex, 1);
-                showConfirmation('Removed from favorites');
-            }
-            
-            saveFavorites();
-            updateFavoriteButton();
-            
-            // Refresh favorites view if currently viewing
-            if (currentView === 'favorites') {
-                displayFavorites();
-            }
-        }
-
-        function updateFavoriteButton() {
-            const favoriteBtn = document.getElementById('favorite-btn');
-            const isFavorited = favorites.some(fav => fav.text === currentJoke);
-            
-            if (isFavorited) {
-                favoriteBtn.classList.add('favorited');
-                favoriteBtn.innerHTML = '❤️';
-                favoriteBtn.title = 'Remove from favorites';
-            } else {
-                favoriteBtn.classList.remove('favorited');
-                favoriteBtn.innerHTML = '♡';
-                favoriteBtn.title = 'Add to favorites';
-            }
-        }
-
-        function updateFavoritesCount() {
-            const countElement = document.getElementById('favorites-count');
-            countElement.textContent = `(${favorites.length})`;
-        }
-
-        function showMainView() {
-            currentView = 'main';
-            document.getElementById('main-section').classList.add('active');
-            document.getElementById('favorites-section').classList.remove('active');
-            document.getElementById('main-toggle').classList.add('active');
-            document.getElementById('favorites-toggle').classList.remove('active');
-            document.getElementById('controls').style.display = 'block';
-        }
-
-        function showFavoritesView() {
-            currentView = 'favorites';
-            document.getElementById('main-section').classList.remove('active');
-            document.getElementById('favorites-section').classList.add('active');
-            document.getElementById('main-toggle').classList.remove('active');
-            document.getElementById('favorites-toggle').classList.add('active');
-            document.getElementById('controls').style.display = 'none';
-            displayFavorites();
-        }
-
-
-        function displayFavorites() {
-            const favoritesList = document.getElementById('favorites-list');
-            const emptyMessage = document.getElementById('empty-favorites');
-            
-            if (favorites.length === 0) {
-                emptyMessage.style.display = 'block';
-                favoritesList.innerHTML = '';
-                favoritesList.appendChild(emptyMessage);
-                return;
-            }
-            
-            emptyMessage.style.display = 'none';
-            favoritesList.innerHTML = '';
-            
-            favorites.forEach((favorite, index) => {
-                const favoriteItem = document.createElement('div');
-                favoriteItem.className = 'favorite-item';
-                favoriteItem.innerHTML = `
-                    <div class="favorite-joke-text">${favorite.text}</div>
-                    <div class="favorite-actions">
-                        <small>Added: ${favorite.dateAdded}</small>
-                        <button class="remove-favorite-btn" onclick="removeFavorite('${favorite.id}')">
-                            Remove
-                        </button>
-                    </div>
-                `;
-                favoritesList.appendChild(favoriteItem);
-            });
-        }
-
-        function removeFavorite(favoriteId) {
-            favorites = favorites.filter(fav => fav.id !== favoriteId);
-            saveFavorites();
-            displayFavorites();
-            updateFavoriteButton();
-            showConfirmation('Removed from favorites');
-        }
-
 
         // Add event listeners for keyboard support
         document.addEventListener('DOMContentLoaded', function() {
-            // Load favorites on page load
-            loadFavorites();
 
             const searchInput = document.getElementById('search-input');
             
@@ -481,11 +345,8 @@
             
             // Global Enter key listener for getting next joke (when not in search input)
             document.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    // Only trigger next joke if not focused on search input and in main view
-                    if (document.activeElement !== searchInput && currentView === 'main') {
-                        getRandomJoke();
-                    }
+                if (event.key === 'Enter' && document.activeElement !== searchInput) {
+                    getRandomJoke();
                 }
             });
         });
