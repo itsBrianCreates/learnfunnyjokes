@@ -333,6 +333,8 @@
 
         // Add event listeners for keyboard support
         document.addEventListener('DOMContentLoaded', function() {
+            // Load a random joke on page load so the first joke isn't always the same
+            getRandomJoke();
 
             const searchInput = document.getElementById('search-input');
             

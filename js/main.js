@@ -12,15 +12,11 @@ let isLoading = false;
  * Initialize the application
  */
 function initializeApp() {
-    // Initialize with the default joke
-    const defaultJoke = "Why don't scientists trust atoms? Because they make up everything!";
-    currentJoke = defaultJoke;
-
-    // Update initial UI state
-    favoritesManager.updateFavoriteButton(currentJoke);
-    
     // Set up event listeners
     setupEventListeners();
+
+    // Load a random joke on startup so the first joke isn't always the same
+    getRandomJoke();
 }
 
 /**
