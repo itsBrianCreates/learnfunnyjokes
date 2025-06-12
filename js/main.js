@@ -181,7 +181,14 @@ async function copyJoke() {
     try {
         const success = await copyToClipboard(jokeText);
         if (success) {
-            showConfirmation('Copied!');
+            const btn = document.getElementById('copy-btn');
+            if (btn) {
+                const original = btn.textContent;
+                btn.textContent = 'Copied';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 2000);
+            }
         } else {
             showError('Failed to copy joke. Your browser may not support this feature.');
         }
