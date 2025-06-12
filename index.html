@@ -45,11 +45,14 @@
                     Why don't scientists trust atoms?<br>
                     <span class="punchline">Because they make up everything!</span>
                 </div>
-                <div class="joke-actions">
-                    <button class="favorite-btn" onclick="toggleFavorite()" id="favorite-btn" title="Add to favorites">♡</button>
-                    <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy Joke</button>
+                <div class="joke-footer">
+                    <div class="joke-actions">
+                        <button class="favorite-btn" onclick="toggleFavorite()" id="favorite-btn" title="Add to favorites">♡</button>
+                        <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy Joke</button>
+                        <button class="share-btn" onclick="shareJoke()" id="share-btn">Share</button>
+                    </div>
+                    <div class="confirmation-message" id="confirmation-message">Copied!</div>
                 </div>
-                <div class="confirmation-message" id="confirmation-message">Copied!</div>
             </div>
         </div>
         
@@ -306,6 +309,25 @@
                     console.error('Fallback copy also failed:', fallbackError);
                     showError('Failed to copy joke. Your browser may not support this feature.');
                 }
+            }
+        }
+
+        // Function to share the current joke using the Web Share API
+        async function shareJoke() {
+            try {
+                const jokeElement = document.getElementById('joke-text');
+                const jokeText = jokeElement.textContent || jokeElement.innerText;
+
+                if (navigator.share) {
+                    await navigator.share({ text: jokeText });
+                    showConfirmation('Shared!');
+                } else {
+                    await navigator.clipboard.writeText(jokeText);
+                    showConfirmation('Copied!');
+                }
+            } catch (error) {
+                console.error('Failed to share joke:', error);
+                showError('Share not supported on this browser.');
             }
         }
 
