@@ -316,12 +316,13 @@
             try {
                 const jokeElement = document.getElementById('joke-text');
                 const jokeText = jokeElement.textContent || jokeElement.innerText;
+                const shareText = `${jokeText}\n\nFind more jokes at https://itsbriancreates.github.io/learnfunnyjokes/`;
 
                 if (navigator.share) {
-                    await navigator.share({ text: jokeText });
+                    await navigator.share({ text: shareText });
                     showConfirmation('Shared!');
                 } else {
-                    await navigator.clipboard.writeText(jokeText);
+                    await navigator.clipboard.writeText(shareText);
                     showConfirmation('Copied!');
                 }
             } catch (error) {
