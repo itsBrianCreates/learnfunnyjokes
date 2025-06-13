@@ -47,7 +47,6 @@
                         <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy</button>
                         <button class="share-btn" onclick="shareJoke()" id="share-btn">Share</button>
                     </div>
-                    <div class="confirmation-message" id="confirmation-message">Copied!</div>
                 </div>
             </div>
         </div>
@@ -333,15 +332,15 @@
 
         // Function to show confirmation message
         function showConfirmation(message = 'Copied!') {
-            const confirmationElement = document.getElementById('confirmation-message');
+            const confirmationElement = document.createElement('div');
+            confirmationElement.className = 'confirmation-message show';
             confirmationElement.textContent = message;
-
-            // Show the confirmation message
-            confirmationElement.classList.add('show');
+            document.body.appendChild(confirmationElement);
 
             // Hide it after 2 seconds
             setTimeout(() => {
                 confirmationElement.classList.remove('show');
+                confirmationElement.remove();
             }, 2000);
         }
 
