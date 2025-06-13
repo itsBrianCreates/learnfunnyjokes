@@ -62,7 +62,7 @@ h1 {
 }
 
 .joke-text {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     line-height: 1.7;
     color: #333;
     font-style: italic;
@@ -321,7 +321,7 @@ h1 {
     }
     
     .joke-text {
-        font-size: 1rem;
+        font-size: 1.2rem;
         line-height: 1.6;
     }
     
@@ -391,7 +391,7 @@ h1 {
     }
     
     .joke-text {
-        font-size: 0.95rem;
+        font-size: 1.1rem;
     }
     
     .punchline {
