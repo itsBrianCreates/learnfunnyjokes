@@ -4,15 +4,15 @@
 
 // Utility for showing confirmation messages
 function showConfirmation(message = 'Copied!') {
-    const confirmationElement = document.getElementById('confirmation-message');
+    const confirmationElement = document.createElement('div');
+    confirmationElement.className = 'confirmation-message show';
     confirmationElement.textContent = message;
-    
-    // Show the confirmation message
-    confirmationElement.classList.add('show');
-    
+    document.body.appendChild(confirmationElement);
+
     // Hide it after 2 seconds
     setTimeout(() => {
         confirmationElement.classList.remove('show');
+        confirmationElement.remove();
     }, 2000);
 }
 
