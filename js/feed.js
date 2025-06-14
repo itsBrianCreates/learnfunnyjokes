@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Enter key in search input triggers search
     if (searchInput) {
-        searchInput.addEventListener('keypress', function(event) {
+        searchInput.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 searchJokes();
             }
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Global Enter key listener for getting next joke (when not in search input)
-    document.addEventListener('keypress', function(event) {
+    document.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' && document.activeElement !== searchInput) {
             getRandomJoke();
         }

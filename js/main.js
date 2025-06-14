@@ -27,7 +27,7 @@ function setupEventListeners() {
     
     // Enter key in search input triggers search
     if (searchInput) {
-        searchInput.addEventListener('keypress', function(event) {
+        searchInput.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 searchJokes();
             }
