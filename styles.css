@@ -637,3 +637,7 @@ h1 {
     text-decoration: underline;
 }
 
+#jokes-sentinel {
+    height: 1px;
+}
+

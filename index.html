@@ -37,6 +37,7 @@
         
         <div class="main-section active" id="main-section">
             <div class="jokes-feed" id="jokes-feed"></div>
+            <div id="jokes-sentinel"></div>
         </div>
         
 
@@ -323,18 +324,27 @@
         }
 
 
+        // Helper to load multiple jokes
+        function loadMoreJokes(count = 1) {
+            for (let i = 0; i < count; i++) {
+                getRandomJoke();
+            }
+        }
+
         // Add event listeners for keyboard support
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial jokes
-            for (let i = 0; i < 3; i++) {
-                getRandomJoke();
-            }
+            loadMoreJokes(3);
 
-            window.addEventListener('scroll', () => {
-                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-                    getRandomJoke();
-                }
-            });
+            const sentinel = document.getElementById('jokes-sentinel');
+            if (sentinel) {
+                const observer = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting) {
+                        loadMoreJokes(1);
+                    }
+                }, { rootMargin: '200px' });
+                observer.observe(sentinel);
+            }
 
             const searchInput = document.getElementById('search-input');
             
