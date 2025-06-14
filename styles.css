@@ -60,6 +60,11 @@ h1 {
     margin-right: -20px;
 }
 
+.site-header.search-header {
+    justify-content: flex-start;
+    gap: 16px;
+}
+
 .site-header h1 {
     margin: 0;
     text-align: left;
