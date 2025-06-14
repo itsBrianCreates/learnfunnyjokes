@@ -24,6 +24,12 @@ const dadJokes = [
 let currentJokeIndex = 0;
 let isLoading = false;
 
+// Helper to generate a random pastel background color
+function getRandomPastelColor() {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 100%, 95%)`;
+}
+
 // Function to fetch a random dad joke from the API
 async function getRandomJoke() {
     if (isLoading) return;
@@ -122,9 +128,7 @@ function displayJoke(jokeText) {
 
     const card = document.createElement('div');
     card.className = 'joke-container fade-in';
-    const lightBackgrounds = ['#fffbe6', '#e6f7ff', '#fff0f6'];
-    const randomBg = lightBackgrounds[Math.floor(Math.random() * lightBackgrounds.length)];
-    card.style.background = randomBg;
+    card.style.background = getRandomPastelColor();
 
     // Split into setup and punchline
     const questionMarkers = ['?', '!'];
