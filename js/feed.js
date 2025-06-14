@@ -26,6 +26,7 @@ let isLoading = false;
 let isSearchPage = false;
 let currentSearchTerm = '';
 let searchPageNum = 1;
+let sentinel; // element used for detecting when to load more jokes
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -76,7 +77,10 @@ async function searchJokes(newSearch = true) {
         currentSearchTerm = inputEl.value.trim();
         searchPageNum = 1;
         const feed = document.getElementById('jokes-feed');
-        if (feed) feed.innerHTML = '';
+        if (feed) {
+            feed.innerHTML = '';
+            if (sentinel) feed.appendChild(sentinel);
+        }
     }
 
     const searchTerm = currentSearchTerm;
@@ -317,7 +321,7 @@ async function loadMoreJokes(count = 1) {
 // Add event listeners for keyboard support
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
-    const sentinel = document.getElementById('jokes-sentinel');
+    sentinel = document.getElementById('jokes-sentinel');
 
     if (searchInput) {
         isSearchPage = true;
