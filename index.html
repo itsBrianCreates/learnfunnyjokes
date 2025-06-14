@@ -36,26 +36,13 @@
         <!-- Removed favorites toggle -->
         
         <div class="main-section active" id="main-section">
-            
-            <div class="joke-container">
-                <div class="joke-text" id="joke-text">
-                    Why don't scientists trust atoms?<br>
-                    <span class="punchline">Because they make up everything!</span>
-                </div>
-                <div class="joke-footer">
-                    <div class="joke-actions">
-                        <button class="copy-btn" onclick="copyJoke()" id="copy-btn">Copy</button>
-                        <button class="share-btn" onclick="shareJoke()" id="share-btn">Share</button>
-                    </div>
-                </div>
-            </div>
+            <div class="jokes-feed" id="jokes-feed"></div>
         </div>
         
 
         
         
         <div class="controls" id="controls">
-            <button class="btn" onclick="getRandomJoke()" id="random-btn">Next Joke <span class="kbd-hint">(Enter)</span></button>
             <div class="search-container">
                 <input type="text" class="search-input" id="search-input" placeholder="Search for jokes (press Enter to search)">
             </div>
@@ -92,7 +79,6 @@
 
         let currentJokeIndex = 0;
         let isLoading = false;
-        let currentJoke = '';
 
         // Function to fetch a random dad joke from the API
         async function getRandomJoke() {
@@ -186,61 +172,62 @@
         }
 
         // Function to display a joke with smooth animation
-        function displayJoke(jokeText, addToHistory = true) {
-            const jokeElement = document.getElementById('joke-text');
-            currentJoke = jokeText;
-            
-            // Add fade-out effect
-            jokeElement.classList.add('fade-out');
-            
-            setTimeout(() => {
-                
-                // Try to split the joke into setup and punchline
-                // Look for common question patterns or use a simple split
-                const questionMarkers = ['?', '!'];
-                let setup = jokeText;
-                let punchline = '';
-                
-                for (let marker of questionMarkers) {
-                    const markerIndex = jokeText.indexOf(marker);
-                    if (markerIndex !== -1 && markerIndex < jokeText.length - 1) {
-                        setup = jokeText.substring(0, markerIndex + 1).trim();
-                        punchline = jokeText.substring(markerIndex + 1).trim();
-                        break;
-                    }
+        function displayJoke(jokeText) {
+            const feed = document.getElementById('jokes-feed');
+            if (!feed) return;
+
+            const card = document.createElement('div');
+            card.className = 'joke-container fade-in';
+
+            // Split into setup and punchline
+            const questionMarkers = ['?', '!'];
+            let setup = jokeText;
+            let punchline = '';
+            for (let marker of questionMarkers) {
+                const markerIndex = jokeText.indexOf(marker);
+                if (markerIndex !== -1 && markerIndex < jokeText.length - 1) {
+                    setup = jokeText.substring(0, markerIndex + 1).trim();
+                    punchline = jokeText.substring(markerIndex + 1).trim();
+                    break;
                 }
-                
-                // If no clear split found, display the whole joke as setup
-                if (!punchline) {
-                    jokeElement.innerHTML = jokeText;
-                } else {
-                    jokeElement.innerHTML = setup + '<br><span class="punchline">' + punchline + '</span>';
-                }
-                
-                // Remove fade-out and add fade-in effect
-                jokeElement.classList.remove('fade-out');
-                jokeElement.classList.add('fade-in');
-                
-                // Remove fade-in class after animation completes
-                setTimeout(() => {
-                    jokeElement.classList.remove('fade-in');
-                }, 400);
-                
-            }, 200); // Half of fade-out duration
+            }
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'joke-text';
+            if (!punchline) {
+                textDiv.innerHTML = jokeText;
+            } else {
+                textDiv.innerHTML = setup + '<br><span class="punchline">' + punchline + '</span>';
+            }
+
+            const footer = document.createElement('div');
+            footer.className = 'joke-footer';
+            const actions = document.createElement('div');
+            actions.className = 'joke-actions';
+
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-btn';
+            copyButton.textContent = 'Copy';
+            copyButton.addEventListener('click', () => copyJoke(jokeText, copyButton));
+
+            const shareButton = document.createElement('button');
+            shareButton.className = 'share-btn';
+            shareButton.textContent = 'Share';
+            shareButton.addEventListener('click', () => shareJoke(jokeText));
+
+            actions.appendChild(copyButton);
+            actions.appendChild(shareButton);
+            footer.appendChild(actions);
+
+            card.appendChild(textDiv);
+            card.appendChild(footer);
+
+            feed.appendChild(card);
         }
 
         // Function to set loading state
         function setLoadingState(loading) {
             isLoading = loading;
-            const btn = document.getElementById('random-btn');
-            if (btn) {
-                btn.disabled = loading;
-                if (loading) {
-                    btn.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-                } else {
-                    btn.innerHTML = 'Next Joke';
-                }
-            }
         }
 
         // Function to show error messages
@@ -265,17 +252,11 @@
         }
 
         // Function to copy the current joke to clipboard
-        async function copyJoke() {
+        async function copyJoke(text, btn) {
             try {
-                // Get the current joke text (without HTML tags)
-                const jokeElement = document.getElementById('joke-text');
-                const jokeText = jokeElement.textContent || jokeElement.innerText;
-
                 // Copy to clipboard using the modern Clipboard API
-                await navigator.clipboard.writeText(jokeText);
+                await navigator.clipboard.writeText(text);
 
-                // Temporarily change button text
-                const btn = document.getElementById('copy-btn');
                 if (btn) {
                     const original = btn.textContent;
                     btn.textContent = 'Copied';
@@ -290,16 +271,11 @@
                 // Fallback for older browsers or if clipboard access fails
                 try {
                     const textArea = document.createElement('textarea');
-                    const jokeElement = document.getElementById('joke-text');
-                    const jokeText = jokeElement.textContent || jokeElement.innerText;
-
-                    textArea.value = jokeText;
+                    textArea.value = text;
                     document.body.appendChild(textArea);
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-
-                    const btn = document.getElementById('copy-btn');
                     if (btn) {
                         const original = btn.textContent;
                         btn.textContent = 'Copied';
@@ -315,11 +291,9 @@
         }
 
         // Function to share the current joke using the Web Share API
-        async function shareJoke() {
+        async function shareJoke(text) {
             try {
-                const jokeElement = document.getElementById('joke-text');
-                const jokeText = jokeElement.textContent || jokeElement.innerText;
-                const shareText = `${jokeText}\n\nFind more jokes at https://itsbriancreates.github.io/learnfunnyjokes/`;
+                const shareText = `${text}\n\nFind more jokes at https://itsbriancreates.github.io/learnfunnyjokes/`;
 
                 if (navigator.share) {
                     await navigator.share({ text: shareText });
@@ -351,8 +325,16 @@
 
         // Add event listeners for keyboard support
         document.addEventListener('DOMContentLoaded', function() {
-            // Load a random joke on page load so the first joke isn't always the same
-            getRandomJoke();
+            // Load initial jokes
+            for (let i = 0; i < 3; i++) {
+                getRandomJoke();
+            }
+
+            window.addEventListener('scroll', () => {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+                    getRandomJoke();
+                }
+            });
 
             const searchInput = document.getElementById('search-input');
             
