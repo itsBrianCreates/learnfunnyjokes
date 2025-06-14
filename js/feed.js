@@ -34,32 +34,48 @@ function getRandomPastelColor() {
     return `hsl(${hue}, 100%, 95%)`;
 }
 
-// Function to fetch a random dad joke from the API
+// Fetch a random knock-knock joke from the API
+async function fetchKnockKnockJoke() {
+    const response = await fetch('https://official-joke-api.appspot.com/jokes/knock-knock/random');
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const jokeObj = Array.isArray(data) ? data[0] : data;
+    return `${jokeObj.setup} ${jokeObj.punchline}`;
+}
+
+// Function to fetch a random dad joke or knock-knock joke
 async function getRandomJoke() {
     if (isLoading) return;
-    
+
     setLoadingState(true);
     clearError();
-    
+
     try {
-        // Fetch joke from icanhazdadjoke.com API
-        const response = await fetch('https://icanhazdadjoke.com/', {
-            headers: {
-                'Accept': 'application/json'
+        let jokeText;
+        if (Math.random() < 0.5) {
+            // Fetch joke from icanhazdadjoke.com API
+            const response = await fetch('https://icanhazdadjoke.com/', {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
-        
-        // Check if the response is successful
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+
+            const data = await response.json();
+            jokeText = data.joke;
+        } else {
+            // Fetch knock-knock joke
+            jokeText = await fetchKnockKnockJoke();
         }
-        
-        // Parse the JSON response
-        const data = await response.json();
-        
-        // Display the joke
-        displayJoke(data.joke);
-        
+
+        displayJoke(jokeText);
+
     } catch (error) {
         console.error('Error fetching joke:', error);
         showError('Failed to fetch joke. Please check your internet connection and try again.');
