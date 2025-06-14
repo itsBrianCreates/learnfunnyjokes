@@ -126,6 +126,9 @@ function displayJoke(jokeText) {
     const feed = document.getElementById('jokes-feed');
     if (!feed) return;
 
+    // Remove any empty state message once a joke is displayed
+    removeEmptyState();
+
     const card = document.createElement('div');
     card.className = 'joke-container fade-in';
     card.style.background = getRandomPastelColor();
@@ -200,6 +203,26 @@ function clearError() {
     if (existingError) {
         existingError.remove();
     }
+}
+
+// Remove the search empty state message if it exists
+function removeEmptyState() {
+    const empty = document.getElementById('empty-state');
+    if (empty) {
+        empty.remove();
+    }
+}
+
+// Show a playful message prompting the user to search for jokes
+function showSearchEmptyState() {
+    const feed = document.getElementById('jokes-feed');
+    if (!feed) return;
+
+    const empty = document.createElement('div');
+    empty.id = 'empty-state';
+    empty.className = 'empty-state';
+    empty.textContent = 'Nothing here yet! Type something funny above to search.';
+    feed.appendChild(empty);
 }
 
 // Function to copy the current joke to clipboard
@@ -283,11 +306,12 @@ async function loadMoreJokes(count = 1) {
 
 // Add event listeners for keyboard support
 document.addEventListener('DOMContentLoaded', function() {
-    // Load initial jokes
-    loadMoreJokes(5);
-
     const sentinel = document.getElementById('jokes-sentinel');
+
     if (sentinel) {
+        // Index page: load jokes immediately and set up infinite scroll
+        loadMoreJokes(5);
+
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver(entries => {
                 if (entries[0].isIntersecting) {
@@ -305,6 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             window.addEventListener('scroll', onScroll, { passive: true });
         }
+    } else {
+        // Search page: show empty state instead of loading jokes
+        showSearchEmptyState();
     }
 
     const searchInput = document.getElementById('search-input');

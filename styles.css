@@ -40,6 +40,15 @@ body {
     gap: 16px;
 }
 
+/* Message shown on the search page before any results */
+.empty-state {
+    padding: 20px;
+    border-radius: 8px;
+    background: #f0f0ff;
+    color: #555;
+    font-style: italic;
+}
+
 h1 {
     color: #333;
     margin-bottom: 25px;
