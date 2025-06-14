@@ -42,7 +42,7 @@ body {
 
 /* Message shown on the search page before any results */
 .empty-state {
-    padding: 20px;
+    padding: 64px 20px;
     border-radius: 8px;
     background: #f0f0ff;
     color: #555;

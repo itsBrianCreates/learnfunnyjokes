@@ -221,7 +221,7 @@ function showSearchEmptyState() {
     const empty = document.createElement('div');
     empty.id = 'empty-state';
     empty.className = 'empty-state';
-    empty.textContent = 'Nothing here yet! Type something funny above to search.';
+    empty.textContent = 'Search for a topic and we\u2019ll deliver the jokes—hot and fresh, like comedy toast.';
     feed.appendChild(empty);
 }
 
