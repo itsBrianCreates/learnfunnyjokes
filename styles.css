@@ -114,7 +114,7 @@ h1 {
 /* Pills for filtering joke types */
 .pill-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
     margin-bottom: 20px;
 }
