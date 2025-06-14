@@ -157,12 +157,12 @@ function displayJoke(jokeText) {
     actions.className = 'joke-actions';
 
     const copyButton = document.createElement('button');
-    copyButton.className = 'copy-btn';
+    copyButton.className = 'copy-btn btn-primary';
     copyButton.textContent = 'Copy';
     copyButton.addEventListener('click', () => copyJoke(jokeText, copyButton));
 
     const shareButton = document.createElement('button');
-    shareButton.className = 'share-btn';
+    shareButton.className = 'share-btn btn-primary';
     shareButton.textContent = 'Share';
     shareButton.addEventListener('click', () => shareJoke(jokeText));
 
