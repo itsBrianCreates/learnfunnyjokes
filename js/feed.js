@@ -122,7 +122,16 @@ function displayJoke(jokeText) {
 
     const card = document.createElement('div');
     card.className = 'joke-container fade-in';
-    const lightBackgrounds = ['#fffbe6', '#e6f7ff', '#fff0f6'];
+    const lightBackgrounds = [
+        '#fffbe6', // light cream
+        '#e6f7ff', // soft blue
+        '#fff0f6', // pale pink
+        '#f0fff4', // mint
+        '#f5f5dc', // beige
+        '#fdf5e6', // old lace
+        '#e8f5e9', // light green
+        '#fef9e7'  // soft wheat
+    ];
     const randomBg = lightBackgrounds[Math.floor(Math.random() * lightBackgrounds.length)];
     card.style.background = randomBg;
 
