@@ -63,30 +63,32 @@ h1 {
     text-align: left;
 }
 
-.header-search {
+.icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    background: transparent;
+    color: rgba(0, 0, 0, 0.9);
     text-decoration: none;
-    font-size: 1.2rem;
-    padding: 6px;
-    border-radius: 6px;
-    background: #28a745;
-    color: white;
 }
 
+.icon-button svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.icon-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.header-search,
 .header-back {
     text-decoration: none;
-    font-size: 1.2rem;
-    padding: 6px;
-    border-radius: 6px;
-    background: #007bff;
-    color: white;
-}
-
-.header-search:hover {
-    background: #20c997;
-}
-
-.header-back:hover {
-    background: #0056b3;
 }
 
 .joke-container {
