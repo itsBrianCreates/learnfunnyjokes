@@ -23,6 +23,9 @@ const dadJokes = [
 
 let currentJokeIndex = 0;
 let isLoading = false;
+let isSearchPage = false;
+let currentSearchTerm = '';
+let searchPageNum = 1;
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -65,42 +68,49 @@ async function getRandomJoke() {
 }
 
 // Function to search for jokes with specific terms
-async function searchJokes() {
-    const searchTerm = document.getElementById('search-input').value.trim();
-    
+async function searchJokes(newSearch = true) {
+    const inputEl = document.getElementById('search-input');
+    if (!inputEl) return;
+
+    if (newSearch) {
+        currentSearchTerm = inputEl.value.trim();
+        searchPageNum = 1;
+        const feed = document.getElementById('jokes-feed');
+        if (feed) feed.innerHTML = '';
+    }
+
+    const searchTerm = currentSearchTerm;
+
     if (!searchTerm) {
         showError('Please enter a search term.');
         return;
     }
-    
+
     if (isLoading) return;
-    
+
     setLoadingState(true);
     clearError();
-    
+
     try {
-        // Fetch jokes from the search endpoint
-        const response = await fetch(`https://icanhazdadjoke.com/search?term=${encodeURIComponent(searchTerm)}`, {
+        const response = await fetch(`https://icanhazdadjoke.com/search?term=${encodeURIComponent(searchTerm)}&page=${searchPageNum}&limit=5`, {
             headers: {
                 'Accept': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
-        // Check if any jokes were found
+
         if (data.results && data.results.length > 0) {
-            // Get a random joke from the search results
-            const randomJoke = data.results[Math.floor(Math.random() * data.results.length)];
-            displayJoke(randomJoke.joke);
-        } else {
+            data.results.forEach(result => displayJoke(result.joke));
+            searchPageNum++;
+        } else if (newSearch) {
             showError(`No jokes found for "${searchTerm}". Try a different search term.`);
         }
-        
+
     } catch (error) {
         console.error('Error searching jokes:', error);
         showError('Failed to search for jokes. Please check your internet connection and try again.');
@@ -306,9 +316,39 @@ async function loadMoreJokes(count = 1) {
 
 // Add event listeners for keyboard support
 document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
     const sentinel = document.getElementById('jokes-sentinel');
 
-    if (sentinel) {
+    if (searchInput) {
+        isSearchPage = true;
+        showSearchEmptyState();
+
+        if (sentinel) {
+            const feed = document.getElementById('jokes-feed');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting && currentSearchTerm) {
+                        searchJokes(false);
+                    }
+                }, { root: feed });
+                observer.observe(sentinel);
+            } else {
+                const onScroll = () => {
+                    if (feed.scrollWidth - feed.scrollLeft - feed.clientWidth < 50 && currentSearchTerm) {
+                        searchJokes(false);
+                    }
+                };
+                feed.addEventListener('scroll', onScroll, { passive: true });
+            }
+        }
+
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchJokes(true);
+            }
+        });
+
+    } else if (sentinel) {
         // Index page: load jokes immediately and set up infinite scroll
         loadMoreJokes(5);
 
@@ -320,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, { rootMargin: '0px' });
             observer.observe(sentinel);
         } else {
-            // Fallback for older browsers without IntersectionObserver
             const onScroll = () => {
                 const rect = sentinel.getBoundingClientRect();
                 if (rect.top - window.innerHeight < 0) {
@@ -329,25 +368,10 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             window.addEventListener('scroll', onScroll, { passive: true });
         }
-    } else {
-        // Search page: show empty state instead of loading jokes
-        showSearchEmptyState();
     }
 
-    const searchInput = document.getElementById('search-input');
-
-    // Enter key in search input triggers search
-    if (searchInput) {
-        searchInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                searchJokes();
-            }
-        });
-    }
-    
-    // Global Enter key listener for getting next joke (when not in search input)
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter' && document.activeElement !== searchInput) {
+        if (event.key === 'Enter' && document.activeElement !== searchInput && !isSearchPage) {
             getRandomJoke();
         }
     });

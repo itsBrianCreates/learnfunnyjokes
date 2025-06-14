@@ -720,6 +720,23 @@ h1 {
     width: 100%;
 }
 
+/* Horizontal scrolling for search results */
+.search-results {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.search-results .joke-container {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+}
+
+.search-results #jokes-sentinel {
+    width: 1px;
+    height: 100%;
+}
+
 /* Primary button style used for Copy and Share buttons */
 .btn-primary {
     background: #000000cc;
