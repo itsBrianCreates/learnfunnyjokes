@@ -46,6 +46,14 @@ h1 {
     line-height: 1.2;
 }
 
+.site-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1000;
+    padding-bottom: 10px;
+}
+
 .joke-container {
     background: #f8f9fa;
     border-radius: 10px;
