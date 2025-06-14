@@ -28,6 +28,8 @@ let currentSearchTerm = '';
 let searchPageNum = 1;
 let sentinel; // element used for detecting when to load more jokes
 let currentJokeType = 'all'; // all | dad | knock
+// Track knock-knock jokes we've already shown to avoid repeats
+const seenKnockKnockJokes = new Set();
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -36,15 +38,31 @@ function getRandomPastelColor() {
 }
 
 // Fetch a random knock-knock joke from the API
+// Avoid repeating jokes that have already been shown
 async function fetchKnockKnockJoke() {
-    const response = await fetch('https://official-joke-api.appspot.com/jokes/knock-knock/random');
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    let attempts = 0;
+    const maxAttempts = 5;
+    let jokeText = '';
+
+    while (attempts < maxAttempts) {
+        const response = await fetch('https://official-joke-api.appspot.com/jokes/knock-knock/random');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const jokeObj = Array.isArray(data) ? data[0] : data;
+        jokeText = `${jokeObj.setup} ${jokeObj.punchline}`;
+
+        if (!seenKnockKnockJokes.has(jokeText)) {
+            seenKnockKnockJokes.add(jokeText);
+            break;
+        }
+
+        attempts++;
     }
 
-    const data = await response.json();
-    const jokeObj = Array.isArray(data) ? data[0] : data;
-    return `${jokeObj.setup} ${jokeObj.punchline}`;
+    return jokeText;
 }
 
 // Fetch a random dad joke from the API
