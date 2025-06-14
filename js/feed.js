@@ -281,12 +281,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const sentinel = document.getElementById('jokes-sentinel');
     if (sentinel) {
-        const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                loadMoreJokes(1);
-            }
-        }, { rootMargin: '200px' });
-        observer.observe(sentinel);
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) {
+                    loadMoreJokes(1);
+                }
+            }, { rootMargin: '200px' });
+            observer.observe(sentinel);
+        } else {
+            // Fallback for older browsers without IntersectionObserver
+            const onScroll = () => {
+                const rect = sentinel.getBoundingClientRect();
+                if (rect.top - window.innerHeight < 200) {
+                    loadMoreJokes(1);
+                }
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+        }
     }
 
     const searchInput = document.getElementById('search-input');
