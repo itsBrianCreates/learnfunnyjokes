@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 observer.observe(sentinel);
             } else {
                 const onScroll = () => {
-                    if (feed.scrollWidth - feed.scrollLeft - feed.clientWidth < 50 && currentSearchTerm) {
+                    if (feed.scrollHeight - feed.scrollTop - feed.clientHeight < 50 && currentSearchTerm) {
                         searchJokes(false);
                     }
                 };

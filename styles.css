@@ -719,21 +719,20 @@ h1 {
     width: 100%;
 }
 
-/* Horizontal scrolling for search results */
+/* Vertical scrolling for search results */
 .search-results {
-    flex-direction: row;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 .search-results .joke-container {
-    flex: 0 0 80%;
-    scroll-snap-align: start;
+    flex: 1 0 auto;
+    scroll-snap-align: unset;
 }
 
 .search-results #jokes-sentinel {
-    width: 1px;
-    height: 100%;
+    width: 100%;
+    height: 1px;
 }
 
 /* Primary button style used for Copy and Share buttons */
