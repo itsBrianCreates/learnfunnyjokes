@@ -122,6 +122,9 @@ function displayJoke(jokeText) {
 
     const card = document.createElement('div');
     card.className = 'joke-container fade-in';
+    const lightBackgrounds = ['#fffbe6', '#e6f7ff', '#fff0f6'];
+    const randomBg = lightBackgrounds[Math.floor(Math.random() * lightBackgrounds.length)];
+    card.style.background = randomBg;
 
     // Split into setup and punchline
     const questionMarkers = ['?', '!'];
