@@ -286,13 +286,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (entries[0].isIntersecting) {
                     loadMoreJokes(1);
                 }
-            }, { rootMargin: '200px' });
+            }, { rootMargin: '0px' });
             observer.observe(sentinel);
         } else {
             // Fallback for older browsers without IntersectionObserver
             const onScroll = () => {
                 const rect = sentinel.getBoundingClientRect();
-                if (rect.top - window.innerHeight < 200) {
+                if (rect.top - window.innerHeight < 0) {
                     loadMoreJokes(1);
                 }
             };
