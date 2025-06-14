@@ -277,7 +277,7 @@ async function loadMoreJokes(count = 1) {
 // Add event listeners for keyboard support
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial jokes
-    loadMoreJokes(3);
+    loadMoreJokes(5);
 
     const sentinel = document.getElementById('jokes-sentinel');
     if (sentinel) {
