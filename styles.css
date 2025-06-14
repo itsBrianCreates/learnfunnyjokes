@@ -545,7 +545,7 @@ h1 {
 }
 
 .copy-btn {
-    background: rgba(0, 0, 0, 0.8);
+    background: #000000cc;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -566,7 +566,7 @@ h1 {
 }
 
 .share-btn {
-    background: rgba(0, 0, 0, 0.8);
+    background: #000000cc;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -722,7 +722,7 @@ h1 {
 
 /* Primary button style used for Copy and Share buttons */
 .btn-primary {
-    background: rgba(0, 0, 0, 0.8);
+    background: #000000cc;
     color: #ffffff;
     border: none;
 }
