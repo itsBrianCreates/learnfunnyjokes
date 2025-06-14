@@ -545,7 +545,7 @@ h1 {
 }
 
 .copy-btn {
-    background: #1a1a1a;
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     border: none;
     padding: 10px 16px;
@@ -566,7 +566,7 @@ h1 {
 }
 
 .share-btn {
-    background: #1a1a1a;
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     border: none;
     padding: 10px 16px;
@@ -718,5 +718,12 @@ h1 {
 #jokes-sentinel {
     height: 1px;
     width: 100%;
+}
+
+/* Primary button style used for Copy and Share buttons */
+.btn-primary {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    border: none;
 }
 
