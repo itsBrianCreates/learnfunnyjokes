@@ -44,7 +44,6 @@ body {
 .empty-state {
     padding: 64px 20px;
     border-radius: 8px;
-    background: #f0f0ff;
     color: #555;
     font-style: italic;
 }
