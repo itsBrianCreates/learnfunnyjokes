@@ -27,6 +27,7 @@ let isSearchPage = false;
 let currentSearchTerm = '';
 let searchPageNum = 1;
 let sentinel; // element used for detecting when to load more jokes
+let currentJokeType = 'all'; // all | dad | knock
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -46,6 +47,22 @@ async function fetchKnockKnockJoke() {
     return `${jokeObj.setup} ${jokeObj.punchline}`;
 }
 
+// Fetch a random dad joke from the API
+async function fetchDadJoke() {
+    const response = await fetch('https://icanhazdadjoke.com/', {
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.joke;
+}
+
 // Function to fetch a random dad joke or knock-knock joke
 async function getRandomJoke() {
     if (isLoading) return;
@@ -55,23 +72,16 @@ async function getRandomJoke() {
 
     try {
         let jokeText;
-        if (Math.random() < 0.5) {
-            // Fetch joke from icanhazdadjoke.com API
-            const response = await fetch('https://icanhazdadjoke.com/', {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            jokeText = data.joke;
-        } else {
-            // Fetch knock-knock joke
+        if (currentJokeType === 'dad') {
+            jokeText = await fetchDadJoke();
+        } else if (currentJokeType === 'knock') {
             jokeText = await fetchKnockKnockJoke();
+        } else {
+            if (Math.random() < 0.5) {
+                jokeText = await fetchDadJoke();
+            } else {
+                jokeText = await fetchKnockKnockJoke();
+            }
         }
 
         displayJoke(jokeText);
@@ -334,10 +344,30 @@ async function loadMoreJokes(count = 1) {
     }
 }
 
+// Switch the current joke type and refresh the feed
+function switchJokeType(type) {
+    currentJokeType = type;
+    const feed = document.getElementById('jokes-feed');
+    if (feed) {
+        feed.innerHTML = '';
+        if (sentinel) feed.appendChild(sentinel);
+    }
+    loadMoreJokes(5);
+}
+
 // Add event listeners for keyboard support
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     sentinel = document.getElementById('jokes-sentinel');
+    const pills = document.querySelectorAll('.joke-pill');
+
+    pills.forEach(btn => {
+        btn.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            switchJokeType(btn.dataset.type);
+        });
+    });
 
     if (searchInput) {
         isSearchPage = true;
