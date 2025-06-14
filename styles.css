@@ -79,7 +79,7 @@ h1 {
     background: #fffbe6;
     border-radius: 12px;
     padding: 25px 20px;
-    margin: 25px 0;
+    margin: 16px 0;
     width: 100%;
     aspect-ratio: 1 / 1;
     display: flex;
@@ -353,7 +353,7 @@ h1 {
     
     .joke-container {
         padding: 20px 16px;
-        margin: 20px 0;
+        margin: 16px 0;
     }
     
     .joke-text {
@@ -490,7 +490,7 @@ h1 {
     }
     
     .joke-container {
-        margin: 15px 0;
+        margin: 16px 0;
         padding: 16px;
     }
     
