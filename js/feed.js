@@ -27,6 +27,8 @@ let isSearchPage = false;
 let currentSearchTerm = '';
 let searchPageNum = 1;
 let sentinel; // element used for detecting when to load more jokes
+// Track displayed knock-knock jokes by ID to avoid repeats
+const displayedKnockKnockIds = new Set();
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -36,14 +38,33 @@ function getRandomPastelColor() {
 
 // Fetch a random knock-knock joke from the API
 async function fetchKnockKnockJoke() {
-    const response = await fetch('https://official-joke-api.appspot.com/jokes/knock-knock/random');
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    let lastJoke = null;
+    for (let i = 0; i < 5; i++) {
+        const response = await fetch('https://official-joke-api.appspot.com/jokes/knock-knock/random');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const jokeObj = Array.isArray(data) ? data[0] : data;
+        lastJoke = jokeObj;
+
+        if (!displayedKnockKnockIds.has(jokeObj.id)) {
+            displayedKnockKnockIds.add(jokeObj.id);
+            break;
+        }
     }
 
-    const data = await response.json();
-    const jokeObj = Array.isArray(data) ? data[0] : data;
-    return `${jokeObj.setup} ${jokeObj.punchline}`;
+    if (!lastJoke) {
+        throw new Error('Failed to fetch joke');
+    }
+
+    // Limit memory by clearing the set if it grows too large
+    if (displayedKnockKnockIds.size > 50) {
+        displayedKnockKnockIds.clear();
+    }
+
+    return `${lastJoke.setup} ${lastJoke.punchline}`;
 }
 
 // Function to fetch a random dad joke or knock-knock joke
