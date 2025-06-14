@@ -89,7 +89,7 @@ h1 {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     position: relative;
-    color: #333;
+    color: #1a1a1a;
 }
 
 .joke-container:hover {
@@ -100,7 +100,7 @@ h1 {
 .joke-text {
     font-size: 1.3rem;
     line-height: 1.7;
-    color: #333;
+    color: #1a1a1a;
     font-style: italic;
     opacity: 1;
     transform: translateY(0);
@@ -497,7 +497,7 @@ h1 {
 }
 
 .copy-btn {
-    background: linear-gradient(45deg, #6c757d, #5a6268);
+    background: #1a1a1a;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -518,7 +518,7 @@ h1 {
 }
 
 .share-btn {
-    background: linear-gradient(45deg, #007bff, #0069d9);
+    background: #1a1a1a;
     color: white;
     border: none;
     padding: 10px 16px;
