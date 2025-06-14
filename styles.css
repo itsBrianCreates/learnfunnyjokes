@@ -78,7 +78,7 @@ h1 {
 
 .joke-container {
     background: #fffbe6;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 25px 20px;
     margin: 0;
     width: 100%;
@@ -424,7 +424,7 @@ h1 {
     .joke-container {
         padding: 16px 12px;
         margin: 0;
-        border-radius: 8px;
+        border-radius: 16px;
     }
     
     .joke-text {
