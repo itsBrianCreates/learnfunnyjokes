@@ -327,9 +327,9 @@
 
 
         // Helper to load multiple jokes
-        function loadMoreJokes(count = 1) {
+        async function loadMoreJokes(count = 1) {
             for (let i = 0; i < count; i++) {
-                getRandomJoke();
+                await getRandomJoke();
             }
         }
 
