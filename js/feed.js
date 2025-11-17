@@ -45,6 +45,8 @@ const pickupLines = [
     "If you were a Transformer, you'd be Optimus Fine.",
 ];
 
+let cachedPickupCatalog = null;
+
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
     const hue = Math.floor(Math.random() * 360);
@@ -95,43 +97,83 @@ async function fetchDadJoke() {
     return data.joke;
 }
 
-// Pick a local pickup line when the API is unavailable
+// Pull a curated pickup line list from the bundled JSON file for richer local content
+async function loadPickupCatalog() {
+    if (cachedPickupCatalog) return cachedPickupCatalog;
+
+    try {
+        const response = await fetch('data/pickup-lines.json');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data) && data.length) {
+            cachedPickupCatalog = data;
+        }
+    } catch (error) {
+        console.warn('Local pickup line catalog not available:', error);
+        cachedPickupCatalog = [];
+    }
+
+    return cachedPickupCatalog;
+}
+
+// Choose a pickup line from any locally available source
 function getLocalPickupLine() {
-    const freshLines = pickupLines.filter(line => !seenPickupLines.has(line));
-    const pool = freshLines.length > 0 ? freshLines : pickupLines;
+    const combinedLines = [...pickupLines, ...(cachedPickupCatalog || [])];
+    if (combinedLines.length === 0) return 'No pickup lines available right now, but you look amazing!';
+
+    const freshLines = combinedLines.filter(line => !seenPickupLines.has(line));
+    const pool = freshLines.length > 0 ? freshLines : combinedLines;
     const choice = pool[Math.floor(Math.random() * pool.length)];
     seenPickupLines.add(choice);
     return choice;
 }
 
-// Fetch a cheesy pickup line from the API with local fallback
+// Fetch pickup lines from the public RizzAPI
+async function fetchPickupLineFromRizz() {
+    const response = await fetch('https://rizzapi.vercel.app/random');
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const line = (data?.rizz || data?.pickup || data?.line || '').trim();
+    return line || null;
+}
+
+// Use the bundled catalog file as a pseudo-API source
+async function fetchPickupLineFromCatalog() {
+    const catalog = await loadPickupCatalog();
+    if (!catalog.length) return null;
+
+    const available = catalog.filter(line => !seenPickupLines.has(line));
+    const pool = available.length ? available : catalog;
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    seenPickupLines.add(choice);
+    return choice;
+}
+
+// Fetch a cheesy pickup line from multiple sources with graceful fallback
 async function fetchPickupLine() {
-    const maxAttempts = 3;
+    const sources = [fetchPickupLineFromRizz, fetchPickupLineFromCatalog];
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    for (const source of sources) {
         try {
-            const response = await fetch('https://rizzapi.vercel.app/random');
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const line = (data?.rizz || data?.pickup || data?.line || '').trim();
-
-            if (!line) {
-                continue;
-            }
-
-            if (!seenPickupLines.has(line) || seenPickupLines.size > 20) {
+            const line = await source();
+            if (line && (!seenPickupLines.has(line) || seenPickupLines.size > 20)) {
                 seenPickupLines.add(line);
                 return line;
             }
         } catch (error) {
-            console.warn('Pickup line API unavailable, using fallback:', error);
+            console.warn('Pickup line source unavailable, trying next option:', error);
         }
     }
 
+    await loadPickupCatalog();
     return getLocalPickupLine();
 }
 
