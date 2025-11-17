@@ -523,10 +523,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Index page: load jokes immediately and set up infinite scroll
         loadMoreJokes(5);
 
+        const loadByType = () => currentJokeType === 'pickup' ? 4 : 1;
+
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver(entries => {
                 if (entries[0].isIntersecting) {
-                    loadMoreJokes(1);
+                    loadMoreJokes(loadByType());
                 }
             }, { rootMargin: '0px' });
             observer.observe(sentinel);
@@ -534,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const onScroll = () => {
                 const rect = sentinel.getBoundingClientRect();
                 if (rect.top - window.innerHeight < 0) {
-                    loadMoreJokes(1);
+                    loadMoreJokes(loadByType());
                 }
             };
             window.addEventListener('scroll', onScroll, { passive: true });
