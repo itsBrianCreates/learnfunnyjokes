@@ -27,9 +27,23 @@ let isSearchPage = false;
 let currentSearchTerm = '';
 let searchPageNum = 1;
 let sentinel; // element used for detecting when to load more jokes
-let currentJokeType = 'all'; // all | dad | knock
+let currentJokeType = 'all'; // all | dad | knock | pickup
 // Track knock-knock jokes we've already shown to avoid repeats
 const seenKnockKnockJokes = new Set();
+const seenPickupLines = new Set();
+
+const pickupLines = [
+    "Do you have a name, or can I call you mine?",
+    "Are you a magician? Whenever I look at you, everyone else disappears.",
+    "Is your name Wi-Fi? Because I'm feeling a connection.",
+    "Do you believe in love at first sight, or should I walk by again?",
+    "Are you French? Because Eiffel for you.",
+    "If you were a vegetable, you'd be a cute-cumber!",
+    "Your hand looks heavy—can I hold it for you?",
+    "Are you a bank loan? Because you have my interest.",
+    "Are you made of copper and tellurium? Because you're Cu-Te.",
+    "If you were a Transformer, you'd be Optimus Fine.",
+];
 
 // Helper to generate a random pastel background color
 function getRandomPastelColor() {
@@ -81,6 +95,46 @@ async function fetchDadJoke() {
     return data.joke;
 }
 
+// Pick a local pickup line when the API is unavailable
+function getLocalPickupLine() {
+    const freshLines = pickupLines.filter(line => !seenPickupLines.has(line));
+    const pool = freshLines.length > 0 ? freshLines : pickupLines;
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    seenPickupLines.add(choice);
+    return choice;
+}
+
+// Fetch a cheesy pickup line from the API with local fallback
+async function fetchPickupLine() {
+    const maxAttempts = 3;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+            const response = await fetch('https://rizzapi.vercel.app/random');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const line = (data?.rizz || data?.pickup || data?.line || '').trim();
+
+            if (!line) {
+                continue;
+            }
+
+            if (!seenPickupLines.has(line) || seenPickupLines.size > 20) {
+                seenPickupLines.add(line);
+                return line;
+            }
+        } catch (error) {
+            console.warn('Pickup line API unavailable, using fallback:', error);
+        }
+    }
+
+    return getLocalPickupLine();
+}
+
 // Function to fetch a random dad joke or knock-knock joke
 async function getRandomJoke() {
     if (isLoading) return;
@@ -94,11 +148,18 @@ async function getRandomJoke() {
             jokeText = await fetchDadJoke();
         } else if (currentJokeType === 'knock') {
             jokeText = await fetchKnockKnockJoke();
+        } else if (currentJokeType === 'pickup') {
+            jokeText = await fetchPickupLine();
         } else {
-            if (Math.random() < 0.5) {
+            const jokeTypes = ['dad', 'knock', 'pickup'];
+            const randomType = jokeTypes[Math.floor(Math.random() * jokeTypes.length)];
+
+            if (randomType === 'dad') {
                 jokeText = await fetchDadJoke();
-            } else {
+            } else if (randomType === 'knock') {
                 jokeText = await fetchKnockKnockJoke();
+            } else {
+                jokeText = await fetchPickupLine();
             }
         }
 
