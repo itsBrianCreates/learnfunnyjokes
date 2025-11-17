@@ -53,6 +53,20 @@ function getRandomPastelColor() {
     return `hsl(${hue}, 100%, 95%)`;
 }
 
+// Create or return the shared loading indicator
+function getLoadingIndicator() {
+    let loadingEl = document.getElementById('feed-loading');
+
+    if (!loadingEl) {
+        loadingEl = document.createElement('div');
+        loadingEl.id = 'feed-loading';
+        loadingEl.className = 'feed-loading';
+        loadingEl.innerHTML = '<div class="spinner" aria-hidden="true"></div><span>Loading...</span>';
+    }
+
+    return loadingEl;
+}
+
 // Fetch a random knock-knock joke from the API
 // Avoid repeating jokes that have already been shown
 async function fetchKnockKnockJoke() {
@@ -343,6 +357,25 @@ function displayJoke(jokeText) {
 // Function to set loading state
 function setLoadingState(loading) {
     isLoading = loading;
+
+    const feed = document.getElementById('jokes-feed');
+    if (!feed) return;
+
+    const loadingEl = getLoadingIndicator();
+
+    if (loading) {
+        if (!loadingEl.parentElement) {
+            const sentinelEl = document.getElementById('jokes-sentinel');
+            if (sentinelEl && sentinelEl.parentElement === feed) {
+                feed.insertBefore(loadingEl, sentinelEl);
+            } else {
+                feed.appendChild(loadingEl);
+            }
+        }
+        loadingEl.style.display = 'flex';
+    } else if (loadingEl) {
+        loadingEl.style.display = 'none';
+    }
 }
 
 // Function to show error messages
