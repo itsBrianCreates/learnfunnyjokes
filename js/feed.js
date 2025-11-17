@@ -351,7 +351,11 @@ function displayJoke(jokeText) {
     card.appendChild(textDiv);
     card.appendChild(footer);
 
-    feed.appendChild(card);
+    if (sentinel && sentinel.parentElement === feed) {
+        feed.insertBefore(card, sentinel);
+    } else {
+        feed.appendChild(card);
+    }
 }
 
 // Function to set loading state
@@ -364,13 +368,14 @@ function setLoadingState(loading) {
     const loadingEl = getLoadingIndicator();
 
     if (loading) {
-        if (!loadingEl.parentElement) {
-            const sentinelEl = document.getElementById('jokes-sentinel');
-            if (sentinelEl && sentinelEl.parentElement === feed) {
+        const sentinelEl = document.getElementById('jokes-sentinel');
+
+        if (sentinelEl && sentinelEl.parentElement === feed) {
+            if (loadingEl.parentElement !== feed || loadingEl.nextSibling !== sentinelEl) {
                 feed.insertBefore(loadingEl, sentinelEl);
-            } else {
-                feed.appendChild(loadingEl);
             }
+        } else if (!loadingEl.parentElement) {
+            feed.appendChild(loadingEl);
         }
         loadingEl.style.display = 'flex';
     } else if (loadingEl) {
@@ -416,7 +421,11 @@ function showSearchEmptyState() {
     empty.id = 'empty-state';
     empty.className = 'empty-state';
     empty.textContent = 'Search for a topic and we\u2019ll deliver the jokes—hot and fresh, like comedy toast.';
-    feed.appendChild(empty);
+    if (sentinel && sentinel.parentElement === feed) {
+        feed.insertBefore(empty, sentinel);
+    } else {
+        feed.appendChild(empty);
+    }
 }
 
 // Function to copy the current joke to clipboard
