@@ -152,6 +152,23 @@ h1 {
     color: #1a1a1a;
 }
 
+.joke-container.has-type-label {
+    padding-top: 42px;
+}
+
+.joke-type-label {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
 
 .joke-text {
     font-size: 1.4rem;
