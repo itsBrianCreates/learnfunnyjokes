@@ -1,3 +1,9 @@
+const JOKE_TYPE_LABELS = {
+    dad: 'Dad Joke',
+    knock: 'Knock-Knock Joke',
+    pickup: 'Pickup Line'
+};
+
 const dadJokes = [
     {setup: "Why don't scientists trust atoms?", punchline: "Because they make up everything!"},
     {setup: "I told my wife she was drawing her eyebrows too high.", punchline: "She looked surprised."},
@@ -200,6 +206,8 @@ async function getRandomJoke() {
 
     try {
         let jokeText;
+        let jokeTypeForLabel = null;
+
         if (currentJokeType === 'dad') {
             jokeText = await fetchDadJoke();
         } else if (currentJokeType === 'knock') {
@@ -209,6 +217,7 @@ async function getRandomJoke() {
         } else {
             const jokeTypes = ['dad', 'knock', 'pickup'];
             const randomType = jokeTypes[Math.floor(Math.random() * jokeTypes.length)];
+            jokeTypeForLabel = randomType;
 
             if (randomType === 'dad') {
                 jokeText = await fetchDadJoke();
@@ -219,7 +228,8 @@ async function getRandomJoke() {
             }
         }
 
-        displayJoke(jokeText);
+        const typeLabelKey = currentJokeType === 'all' ? jokeTypeForLabel : null;
+        displayJoke(jokeText, { type: typeLabelKey });
 
     } catch (error) {
         console.error('Error fetching joke:', error);
@@ -297,7 +307,7 @@ function getLocalJoke() {
 }
 
 // Function to display a joke with smooth animation
-function displayJoke(jokeText) {
+function displayJoke(jokeText, options = {}) {
     const feed = document.getElementById('jokes-feed');
     if (!feed) return;
 
@@ -307,6 +317,14 @@ function displayJoke(jokeText) {
     const card = document.createElement('div');
     card.className = 'joke-container fade-in';
     card.style.background = getRandomPastelColor();
+
+    if (options.type && JOKE_TYPE_LABELS[options.type]) {
+        const label = document.createElement('div');
+        label.className = 'joke-type-label';
+        label.textContent = JOKE_TYPE_LABELS[options.type];
+        card.classList.add('has-type-label');
+        card.appendChild(label);
+    }
 
     // Split into setup and punchline
     const questionMarkers = ['?', '!'];
